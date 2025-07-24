@@ -19,17 +19,17 @@ interface Product {
   date_end: number;
 }
 
-export default function ArtworkTable() {
+const ArtworkTable: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [totalRecords, setTotalRecords] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [selectedRowIds, setSelectedRowIds] = useState<Set<number>>(new Set());
   const [selectedRows, setSelectedRows] = useState<Product[]>([]);
-  const [inputValue, setInputValue] = useState("");
-  const rowsPerPage = 12;
+  const [inputValue, setInputValue] = useState<string>("");
+  const rowsPerPage: number = 12;
   const op = useRef<OverlayPanel>(null);
 
-  const loadData = async (page: number) => {
+  const loadData = async (page: number): Promise<void> => {
     const response = await fetch(`https://api.artic.edu/api/v1/artworks?page=${page + 1}&limit=${rowsPerPage}`);
     const data = await response.json();
     setProducts(data.data);
@@ -41,41 +41,39 @@ export default function ArtworkTable() {
   }, [currentPage]);
 
   useEffect(() => {
-    const currentSelected = products.filter((p) => selectedRowIds.has(p.id));
+    const currentSelected: Product[] = products.filter((p) => selectedRowIds.has(p.id));
     setSelectedRows(currentSelected);
   }, [products, selectedRowIds]);
 
-  const handleSelectionChange = (e: any) => {
+  const handleSelectionChange = (e: { value: Product[] }): void => {
     const currentPageSelection: Product[] = e.value;
-    const updatedIds = new Set(selectedRowIds);
+    const updatedIds: Set<number> = new Set(selectedRowIds);
 
-    const currentPageIds = products.map((p) => p.id);
-    const selectedIds = currentPageSelection.map((p) => p.id);
+    const currentPageIds: number[] = products.map((p) => p.id);
+    const selectedIds: number[] = currentPageSelection.map((p) => p.id);
 
-    // Remove unselected IDs from global selection
     currentPageIds.forEach((id) => {
       if (!selectedIds.includes(id)) {
         updatedIds.delete(id);
       }
     });
 
-    // Add selected IDs to global selection
     selectedIds.forEach((id) => updatedIds.add(id));
 
     setSelectedRowIds(updatedIds);
   };
 
-  const handleClick = (event: React.MouseEvent) => {
+  const handleClick = (event: React.MouseEvent): void => {
     op.current?.toggle(event);
   };
 
-  const handleSubmit = async () => {
-    const count = parseInt(inputValue);
+  const handleSubmit = async (): Promise<void> => {
+    const count: number = parseInt(inputValue);
     if (isNaN(count) || count <= 0) return;
 
-    let newIds = new Set<number>();
-    let page = 1;
-    let remaining = count;
+    let newIds: Set<number> = new Set<number>();
+    let page: number = 1;
+    let remaining: number = count;
 
     while (remaining > 0) {
       const response = await fetch(`https://api.artic.edu/api/v1/artworks?page=${page}&limit=100`);
@@ -123,40 +121,21 @@ export default function ArtworkTable() {
         selection={selectedRows}
         onSelectionChange={handleSelectionChange}
         dataKey="id"
-        tableStyle={{ minWidth: "60rem" }}
-        className="p-datatable-gridlines"
-        stripedRows
-        showGridlines
         paginator
         rows={rowsPerPage}
         totalRecords={totalRecords}
-        first={currentPage * rowsPerPage}
         onPage={(e) => setCurrentPage(e.page)}
-        paginatorTemplate="PrevPageLink PageLinks NextPageLink"
-        lazy
       >
-        <Column selectionMode="multiple" headerStyle={{ width: "3rem" }} />
-
-        <Column
-          field="title"
-          body={(rowData) => rowData.title || "—"}
-          header={
-            <span style={{ display: "flex", alignItems: "center", cursor: "pointer" }} onClick={handleClick}>
-              <img
-                src="Screenshot 2025-07-23 104223.png"
-                alt="icon"
-                style={{ width: "18px", height: "18px", marginRight: "8px" }}
-              />
-              Title
-            </span>
-          }
-        />
-        <Column field="place_of_origin" header="Origin" body={(rowData) => rowData.place_of_origin || "—"} />
-        <Column field="artist_display" header="Artist" body={(rowData) => rowData.artist_display || "—"} />
-        <Column field="inscriptions" header="Inscriptions" body={(rowData) => rowData.inscriptions || "—"} />
-        <Column field="date_start" header="Start Year" body={(rowData) => rowData.date_start || "—"} />
-        <Column field="date_end" header="End Year" body={(rowData) => rowData.date_end || "—"} />
+        <Column selectionMode="multiple" headerStyle={{ width: '3em' }} />
+        <Column field="title" header="Title" sortable />
+        <Column field="artist_display" header="Artist" sortable />
+        <Column field="place_of_origin" header="Place of Origin" sortable />
+        <Column field="date_start" header="Date Start" sortable />
+        <Column field="date_end" header="Date End" sortable />
       </DataTable>
+      <Button label="Select Rows" icon="pi pi-plus" onClick={handleClick} />
     </div>
   );
-}
+};
+
+export default ArtworkTable;
