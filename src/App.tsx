@@ -102,7 +102,7 @@ export default function ArtworkTable() {
 
   return (
     <div className="card" style={{ padding: "2rem" }}>
-      <h2>Artworks Table with Input-Based Global Selection</h2>
+      <h2>Data with Table through API:</h2>
 
       <OverlayPanel ref={op}>
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem", width: "200px" }}>
@@ -115,7 +115,7 @@ export default function ArtworkTable() {
         </div>
       </OverlayPanel>
 
-      <h4>{selectedRowIds.size} row(s) globally selected</h4>
+      <h4>{selectedRowIds.size} row(s)  selected in all</h4>
 
       <DataTable
         value={products}
