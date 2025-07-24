@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import type {DataTablePageEvent } from "primereact/datatable";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { OverlayPanel } from "primereact/overlaypanel";
@@ -120,6 +121,7 @@ export default function ArtworkTable() {
         value={products}
         selection={selectedRows}
         onSelectionChange={handleSelectionChange}
+        selectionMode="multiple" 
         dataKey="id"
         tableStyle={{ minWidth: "60rem" }}
         className="p-datatable-gridlines"
@@ -133,7 +135,6 @@ export default function ArtworkTable() {
         paginatorTemplate="PrevPageLink PageLinks NextPageLink"
         lazy
       >
-        {/* ✅ Fixed selectionMode prop */}
         <Column selectionMode="multiple" headerStyle={{ width: "3rem" }} />
 
         <Column
