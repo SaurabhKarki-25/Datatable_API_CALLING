@@ -129,12 +129,12 @@ export default function ArtworkTable() {
         rows={rowsPerPage}
         totalRecords={totalRecords}
         first={currentPage * rowsPerPage}
-        onPage={(e) => setCurrentPage(e.page ?? 0)}
+        onPage={(e: DataTablePageEvent) => setCurrentPage(e.page ?? 0)}
         paginatorTemplate="PrevPageLink PageLinks NextPageLink"
         lazy
       >
-        {/* ✅ selectionMode fixed with type assertion */}
-        <Column selectionMode={"multiple" as "multiple"} headerStyle={{ width: "3rem" }} />
+        {/* ✅ Fixed selectionMode prop */}
+        <Column selectionMode="multiple" headerStyle={{ width: "3rem" }} />
 
         <Column
           field="title"
